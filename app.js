@@ -54,7 +54,7 @@ app.post('/api/playerstats/:id', function(req, res) {
 app.post('/api/teams', function(req, res)
 {
   //SqlString validates and sanitizes our sql statement
-  var sql = SqlString.format(`INSERT INTO nfl_team (team_id, team_name) VALUES (?, ?);`, [newTeamId, newTeamName]);
+  var sql = SqlString.format(`INSERT INTO nfl_team (team_id, team_name) VALUES (?, ?);`, ['33', 'USC Trojans']);
   let db = new sqlite3.Database('./database.sqlite');
   db.run(sql, function(err, result)
   {
@@ -73,17 +73,14 @@ app.post('/api/teams', function(req, res)
   });
 });
 
-app.patch('/api/players/:id', function(req, res)
-{
+app.patch('/api/players/:id', function(req, res) {
   let id = req.params.id;
   //SqlString validates and sanitizes our sql statement
-  var sql = SqlString.format(`UPDATE players SET team_id = ?, age = ?, nfl_experience = ?, isPracticeSquad = ?, jerseyNumber = ? WHERE player_id = ?`,
-                            ['21', '29', '10', 'N', '85', id]);
+  var sql = SqlString.format(`UPDATE players SET team_id = ?, age = ?, nfl_experience = ?, isPracticeSquad = ?, jerseyNumber = ? WHERE player_id = ?`
+    , ['21', '29', '10', 'N', '85', id]);
   let db = new sqlite3.Database('./database.sqlite');
-  db.run(sql, function(err, result)
-  {
-    if (err)
-    {
+  db.run(sql, function(err, result) {
+    if (err) {
       console.error(err);
       res.statusCode = 422;
       return res.json({
@@ -91,7 +88,9 @@ app.patch('/api/players/:id', function(req, res)
       });
     }
     res.statusCode = 201;
-    let player = new Player({ player_id: id });
+    let player = new Player({
+      player_id: id
+    });
     player.fetch()
       .then(function(player) {
         if (!player) {
@@ -100,12 +99,13 @@ app.patch('/api/players/:id', function(req, res)
           res.json(player);
         }
       })
-    })
-    .catch(function(error) {
-      res.status(422).json({
-        error: error.message
+      .catch(function(error) {
+        res.status(422).json({
+          error: error.message
+        });
       });
-    });
+  })
+
 });
 
 
